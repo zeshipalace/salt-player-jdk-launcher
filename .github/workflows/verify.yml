@@ -18,8 +18,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.13'
       - name: Download the supported JBR SDK
@@ -29,7 +29,7 @@ jobs:
             'https://cache-redirector.jetbrains.com/intellij-jbr/jbrsdk-25.0.4.1-${{ matrix.platform }}-x64-b635.70.tar.gz' \
             --output "$RUNNER_TEMP/jbr.tar.gz"
           mkdir "$RUNNER_TEMP/aot-jbr"
-          tar -xzf "$RUNNER_TEMP/jbr.tar.gz" --strip-components=1 -C "$RUNNER_TEMP/aot-jbr"
+          tar --force-local -xzf "$RUNNER_TEMP/jbr.tar.gz" --strip-components=1 -C "$RUNNER_TEMP/aot-jbr"
       - name: Verify the original launcher with modified JAR timestamps
         shell: bash
         run: python tests/test_image.py --jdk "$RUNNER_TEMP/aot-jbr"
