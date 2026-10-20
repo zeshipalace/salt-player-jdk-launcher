@@ -1,0 +1,9 @@
+.gitattributes
+.github/workflows/verify.yml
+.gitignore
+LICENSE
+NOTICE
+README.md
+source-files.txt
+src/main/java/com/xuncorp/saltplayer/launcher/AotCachePatcher.java
+tests/test_image.py

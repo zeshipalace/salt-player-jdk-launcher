@@ -1,0 +1,19 @@
+Salt Player JDK launcher tooling
+
+Copyright (c) 2026 Zeshi Palace
+SPDX-License-Identifier: GPL-2.0-only WITH Classpath-exception-2.0
+
+The archive layout used by the build-time tool is documented in JetBrains Runtime:
+https://github.com/JetBrains/JetBrainsRuntime
+Tag: jb25.0.4.1-b635.70
+Commit: 95357d90d8bde24fd0d3788ae33c8871b0b5b8db
+
+Source references:
+src/hotspot/share/include/cds.h
+src/hotspot/share/cds/aotClassLocation.hpp
+src/hotspot/share/cds/aotClassLocation.cpp
+src/hotspot/share/cds/filemap.cpp
+
+This package contains an independent build-time AOT cache tool. It does not
+contain the player, a modified JVM, or an application startup shim.
+The original OpenJDK license text is preserved in LICENSE.
