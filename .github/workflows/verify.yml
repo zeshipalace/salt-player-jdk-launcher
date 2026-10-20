@@ -22,14 +22,25 @@ jobs:
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.13'
-      - name: Download the supported JBR SDK
-        shell: bash
+      - name: Verify with the supported JBR SDK
+        shell: python
+        env:
+          JBR_PLATFORM: ${{ matrix.platform }}
         run: |
-          curl --fail --location --retry 3 \
-            'https://cache-redirector.jetbrains.com/intellij-jbr/jbrsdk-25.0.4.1-${{ matrix.platform }}-x64-b635.70.tar.gz' \
-            --output "$RUNNER_TEMP/jbr.tar.gz"
-          mkdir "$RUNNER_TEMP/aot-jbr"
-          tar --force-local -xzf "$RUNNER_TEMP/jbr.tar.gz" --strip-components=1 -C "$RUNNER_TEMP/aot-jbr"
-      - name: Verify the original launcher with modified JAR timestamps
-        shell: bash
-        run: python tests/test_image.py --jdk "$RUNNER_TEMP/aot-jbr"
+          import os
+          from pathlib import Path
+          import subprocess
+          import sys
+          import tarfile
+          import urllib.request
+
+          temporary = Path(os.environ['RUNNER_TEMP'])
+          platform = os.environ['JBR_PLATFORM']
+          url = f'https://cache-redirector.jetbrains.com/intellij-jbr/jbrsdk-25.0.4.1-{platform}-x64-b635.70.tar.gz'
+          archive_path = temporary / 'aot-jbr.tar.gz'
+          urllib.request.urlretrieve(url, archive_path)
+          with tarfile.open(archive_path) as archive:
+              archive.extractall(temporary / 'aot-jbr', filter='data')
+          homes = list((temporary / 'aot-jbr').glob('*/release'))
+          assert len(homes) == 1, homes
+          subprocess.run([sys.executable, 'tests/test_image.py', '--jdk', str(homes[0].parent)], check=True)
